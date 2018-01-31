@@ -2,18 +2,37 @@
 
 require_once 'koneksi.php';
 
-if(isset($_GET['username'])) {
+$username = "";
+$password = "";
+$fullname= "";
+$city= "";
+$status= "";
 
-$query = "SELECT * from user where username ='".$_GET['username']."'";	
+if(isset($_GET['username'])) {
+	$username = $_GET['username'];
 }
-else
-{
-$query = "SELECT * from user";	
+if(isset($_GET['password'])) {
+	$password = "and password = '".$_GET['password']."'";
 }
+if(isset($_GET['fullname'])) {
+	$fullname = "and fullname like '%".$_GET['fullname']."%'";
+}
+if(isset($_GET['city'])) {
+	$city = "and city like '%".$_GET['city']."%'";
+}
+if(isset($_GET['status'])) {
+	$status = "and status like '%".$_GET['status']."%'";
+}
+
+
+
+$query = "SELECT * from user where username like '%".$username."%' ".$password." ".$fullname." ".$city." ".$status." ";
+ 
 
 
 $result = mysqli_query($con, $query);
 $arr = array();
+
 if(mysqli_num_rows($result) != 0) {
 while($row = mysqli_fetch_assoc($result)) {
 $arr[] = $row;

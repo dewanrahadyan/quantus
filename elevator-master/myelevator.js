@@ -45,7 +45,7 @@ Elevator.prototype.decide = function() {
     {
     init: function (elevators, floors) {
 
-        var pickUpChance = 0.7;  //  This var means the probability that elevator stops to pick up pax on middle floors.
+        var pickUpChance = 1.0;  //  This var means the probability that elevator stops to pick up pax on middle floors.
         // In different cases try value from 0.4 (usually for Speed levels) to 1.0 (usually for levels with waiting time limit).
 
         var isPressedUp = [];    // Index of array means number of a floor where the button was pressed.

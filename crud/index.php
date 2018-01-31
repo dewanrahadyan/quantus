@@ -14,17 +14,33 @@
           var app = angular.module('myApp', []);
           app.controller('planetController', function($scope, $http) {
             
-            
+            //Pagination setting
+            $scope.currentPage = 0;
+            $scope.pageSize = 2;
+            $scope.data = [];
 
 
             $http.get("http://localhost/crud/data.php")
             .success(function(response) 
                 {
-                    $scope.data = response;
+                    $scope.list = response;
+                    $scope.numberOfPages=function(){
+                    return Math.ceil($scope.data.length/$scope.pageSize);                
+                    }
+
+
+                    angular.forEach($scope.list, function(value, key){
+                        $scope.data.push(value);
+                     
+                    });
+
+                    console.log($scope.data);
+                
                     
-                    //if($scope.session.id==null){window.location.assign("login.html");}else{}           
                 
                 });
+
+
 
             $scope.hapus = function(username) {
                 
@@ -51,14 +67,45 @@
                         console.log("Gagal!");
                 });
                 
-            } 
+            }
+            $scope.search = function() {
+                $http({
+                    url: "http://localhost/crud/data.php",
+                    method: "GET",
+                    params: { 
+                        'username' : $scope.username,
+                        'password' : $scope.password,
+                        'fullname' : $scope.fullname,
+                        'city' : $scope.city,
+                        'status' : $scope.status,
             
-            
+                    }
+                    
+                })
+                .then(function(response) {
+                        
+                        $scope.data = response.data;
+                        console.log($scope.data);
+                }, 
+                function(response) { // optional
+                        console.log(response);
+                        console.log("Gagal!");
+                });
 
-
-
-
+                
+            }  
+ 
           });
+
+          //Import Filter
+            app.filter('startFrom', function() {
+                return function(input, start) {
+                    start = +start; //parse to int
+                    return input.slice(start);
+                }
+            });
+
+            
          
         </script>
 
@@ -66,6 +113,7 @@
     </head>
 
 <a href="add.php">Tambah</a>
+
 
 
     <body ng-app="myApp" ng-controller="planetController">
@@ -79,7 +127,15 @@
             <th>Status</th>
             <th>Aksi</th>
           </tr>
-          <tr ng-repeat="x in data">
+          <tr >
+            <th><input type="text" name="username" ng-model="username" ng-change="search()"></th>
+            <th><input type="text" name="password" ng-model="password" ng-change="search()"></th>
+            <th><input type="text" name="fullname" ng-model="fullname" ng-change="search()"></th>
+            <th><input type="text" name="city" ng-model="city" ng-change="search()"></th>
+            <th><input type="text" name="status" ng-model="status" ng-change="search()"></th>
+            <th></th>
+          </tr>
+          <tr ng-repeat="x in data | startFrom:currentPage*pageSize | limitTo:pageSize">
             <td>{{x.username}}</td>
             <td>{{x.password}}</td> 
             <td>{{x.fullname}}</td> 
@@ -89,10 +145,21 @@
           </tr>
           
 </table>
-        
 
+
+    
+    <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+        Previous
+    </button>
+    {{currentPage+1}}/{{numberOfPages()}}
+    <button ng-disabled="currentPage >= data.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+        Next
+    </button>
+ 
 
   
      
     </body>
+
+    
 </html>

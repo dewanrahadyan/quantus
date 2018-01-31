@@ -10,7 +10,7 @@ $status   = $_POST["status"];
 
 
 error_log($username);
-$query = "UPDATE user SET password = '$password', fullname = '$fullname', city = '$city', status = '$status' WHERE username = $username";
+$query = "UPDATE user SET password = '$password', fullname = '$fullname', city = '$city', status = '$status' WHERE username = '$username'";
 
 //"UPDATE user SET password = '".$password."', fullname = '".$fullname."',  city = '".$city."', status = '".$status."', 
 //WHERE username = '".$username."'";
